@@ -1,44 +1,22 @@
 extern crate comrak;
 
-use comrak::{parse_document, format_html, Arena, ComrakOptions};
-use comrak::nodes::{AstNode, NodeValue};
+use comrak::{format_html, parse_document, Arena, ComrakOptions};
 
-pub fn parse_file(data: String) -> Result<String, String>{
-    
+pub fn parse_file(data: String) -> Result<String, String> {
     let arena = Arena::new();
     let parse_options = ComrakOptions::default();
 
-    let root = parse_document(
-        &arena,
-        &data,
-        &parse_options);
-
-    iterate_nodes(root, &|node| {
-        match &mut node.data.borrow_mut().value {
-            &mut NodeValue::Text(ref mut text) => {
-                let orig = std::mem::replace(text, vec![]);
-                *text = String::from_utf8(orig).unwrap().replace("my", "your").as_bytes().to_vec();
-            }
-            _ => (),
-        }
-    });
+    let root = parse_document(&arena, &data, &parse_options);
 
     let mut html = vec![];
-    
-    match format_html(root, &ComrakOptions::default(), &mut html){
+
+    match format_html(root, &parse_options, &mut html) {
         Ok(_) => (),
         Err(_) => return Err(format!("Could not parse file to html")),
-    } ;
-    
-    format_html(root, &ComrakOptions::default(), &mut html).unwrap();
+    };
 
-    Ok(String::from_utf8(html).unwrap())
-}
-
-fn iterate_nodes<'a, F>(node: &'a AstNode<'a>, f: &F)
-    where F : Fn(&'a AstNode<'a>) {
-    f(node);
-    for c in node.children() {
-        iterate_nodes(c, f);
+    match String::from_utf8(html) {
+        Ok(data) => Ok(data),
+        Err(_) => Err(format!("Could not parse file to html")),
     }
 }
