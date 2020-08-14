@@ -1,34 +1,16 @@
 extern crate comrak;
 
-use std::fs::File;
-use std::path::Path;
-use std::io::prelude::*;
-
 use comrak::{parse_document, format_html, Arena, ComrakOptions};
 use comrak::nodes::{AstNode, NodeValue};
 
-pub fn parse_file(file_path: &str) -> Result<String, String>{
+pub fn parse_file(data: String) -> Result<String, String>{
     
-    let path = Path::new(file_path);
-    let mut file = match File::open(path){
-        Ok(file) => file,
-        Err(_) => return Err(format!("Can not open file {}", path.file_name().unwrap().to_str().expect(""))),
-    };
-
-    let mut contents = String::new();
-    match file.read_to_string(&mut contents){
-        Ok(_) => (),
-        Err(_) => return Err(format!("Can not read file")),
-    };
-
-    let contents = contents.as_str();
-
     let arena = Arena::new();
     let parse_options = ComrakOptions::default();
 
     let root = parse_document(
         &arena,
-        &contents,
+        &data,
         &parse_options);
 
     iterate_nodes(root, &|node| {

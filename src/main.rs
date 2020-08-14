@@ -2,7 +2,7 @@ extern crate gotham;
 
 mod router;
 mod handlers;
-mod parser;
+mod file_handling;
 
 use router::*;
 
