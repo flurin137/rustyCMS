@@ -1,0 +1,21 @@
+FROM alpine:latest
+LABEL Name=rusty_cms Version=0.0.1
+RUN apk --no-cache add curl
+RUN apk add build-base
+RUN curl https://sh.rustup.rs -sSf | \
+    sh -s -- --default-toolchain stable -y
+WORKDIR /rusty_cms
+EXPOSE 7878
+COPY . .
+RUN $HOME/.cargo/bin/cargo install --path .
+CMD ["target/release/rusty_cms"]
+
+
+
+FROM rust:latest
+LABEL Name=rusty_cms Version=0.0.1
+WORKDIR /rusty_cms
+EXPOSE 7878
+COPY . .
+RUN cargo install --path .
+CMD ["rusty_cms"]
