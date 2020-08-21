@@ -1,8 +1,5 @@
-extern crate find_folder;
-
 use crate::file_handling::consts::*;
-use find_folder::*;
-use std::fs::File;
+use std::fs::{File};
 use std::io::prelude::*;
 use std::path::Path;
 
@@ -10,22 +7,16 @@ pub fn read_index(path: Option<String>) -> Result<String, String> {
    
     let sub_path = match path {
         Some(path) if path.starts_with("/") => format!("{}.md", &path[1..]),
-        Some(path) => path,
-        None => String::from(INDEX_FILE),
+        _ => String::from(INDEX_FILE),
     };
-    println!("{}", sub_path);
     
-    let mut user_path = match Search::ParentsThenKids(3, 3).for_folder(USER_FOLDER) {
-        Ok(path) => path,
-        _ => return Err(format!("could not find folder {}", USER_FOLDER)),
-    };
+    println!("requested file: {}", sub_path);
 
-    println!("{}", user_path.display());
+    let sub_path = Path::new(&sub_path);
+    
+    let path: &Path = Path::new(USER_FOLDER);
 
-
-    user_path.push(sub_path);
-
-    let path: &Path = user_path.as_path();
+    let path = &path.join(sub_path);
 
     let file_name = match path.file_name() {
         Some(name) => name,
