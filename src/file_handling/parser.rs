@@ -2,7 +2,7 @@ extern crate comrak;
 
 use comrak::{format_html, parse_document, Arena, ComrakOptions};
 
-pub fn parse_file(data: String) -> Result<String, String> {
+pub fn parse_file(data: &str) -> Result<String, String> {
     let arena = Arena::new();
     let parse_options = ComrakOptions::default();
 

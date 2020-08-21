@@ -1,20 +1,27 @@
 use crate::file_handling::consts::*;
-use std::fs::{File};
+use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-pub fn read_index(path: Option<String>) -> Result<String, String> {
-   
-    let sub_path = match path {
+pub fn read_markdown_file(path: Option<&str>) -> Result<String, String> {
+    let file_name = match path {
         Some(path) if path.starts_with("/") => format!("{}.md", &path[1..]),
         _ => String::from(INDEX_FILE),
     };
-    
-    println!("requested file: {}", sub_path);
+    println!("requested file: {}", file_name);
 
-    let sub_path = Path::new(&sub_path);
-    
-    let path: &Path = Path::new(USER_FOLDER);
+    read_file_data(&file_name, USER_FOLDER)
+}
+
+pub fn read_style_sheet(file_name: &str) -> Result<String, String> {
+    println!("requested file: {}", file_name);
+
+    read_file_data(&file_name, STYLES_FOLDER)
+}
+
+fn read_file_data(file_name: &str, folder_name: &str) -> Result<String, String> {
+    let sub_path = Path::new(&file_name);
+    let path: &Path = Path::new(folder_name);
 
     let path = &path.join(sub_path);
 
@@ -38,6 +45,5 @@ pub fn read_index(path: Option<String>) -> Result<String, String> {
         Ok(_) => (),
         Err(_) => return Err(format!("Can not read file {}", file_name)),
     };
-
     Ok(file_contents)
 }

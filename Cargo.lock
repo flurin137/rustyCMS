@@ -684,6 +684,7 @@ dependencies = [
  "hyper 0.13.7",
  "mime 0.3.16",
  "nickel",
+ "regex",
 ]
 
 [[package]]
