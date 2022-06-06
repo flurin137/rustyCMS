@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 nickel = "*"
-hyper = "0.13.7"
+hyper = "0.14.10"
 mime = "0.3.16"
 comrak = "0.10.1"
 regex = "1"
